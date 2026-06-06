@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>You're in! — Open-Trainer</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="nav">
+    <div class="brand">💪 Open-Trainer</div>
+  </header>
+
+  <main>
+    <section class="hero success">
+      <div id="loading">
+        <h1>Confirming your subscription…</h1>
+        <p class="sub">One moment while we set things up.</p>
+      </div>
+
+      <div id="done" hidden>
+        <h1>🎉 You're in!</h1>
+        <p class="sub">Two quick steps to start training:</p>
+        <ol class="steps">
+          <li>Open the Open-Trainer bot in Telegram.</li>
+          <li>Send it this verification code:</li>
+        </ol>
+        <div class="code" id="code">——————</div>
+        <a class="cta" id="deep-link" href="#" target="_blank" rel="noopener" hidden>Open Telegram &amp; link automatically</a>
+        <p class="fineprint">The bot will link your account and walk you through onboarding.</p>
+      </div>
+
+      <div id="error" hidden>
+        <h1>Hmm, we couldn't confirm that yet.</h1>
+        <p class="sub" id="error-msg">If you were charged, refresh this page in a moment. Otherwise head back and try again.</p>
+        <a class="cta" href="/">Back to home</a>
+      </div>
+    </section>
+  </main>
+
+  <footer><p>Open-Trainer · MIT</p></footer>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+# Open-Trainer — Hermes model configuration.
+# Copy to the Hermes checkout root as `cli-config.yaml` (the Docker build does
+# this). Environment variables in .env take precedence over these values.
+
+model:
+  # DeepSeek V4 "flash" — fast, tool-calling capable, OpenAI-compatible wire.
+  default: "deepseek-v4-flash"
+
+  # Use the bundled DeepSeek provider plugin (plugins/model-providers/deepseek).
+  # Requires DEEPSEEK_API_KEY. base_url is supplied by the provider profile
+  # (https://api.deepseek.com/v1) so it does not need to be set here.
+  provider: "deepseek"
+
+  # deepseek-v4-flash defaults to thinking-mode ON. For a snappy chat coach you
+  # can trade a little reasoning for latency by lowering the effort:
+  # reasoning:
+  #   effort: "low"
+
+# Override at deploy time with env if you want a different brain without editing
+# this file, e.g.  HERMES_MODEL=deepseek-chat  HERMES_PROVIDER=deepseek

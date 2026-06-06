@@ -12,7 +12,10 @@ AI personal trainer accessible via Telegram. Users subscribe, onboard to set the
 
 ## Key Decisions (do not change without asking Mike)
 
-1. **Multi-tenancy:** One Hermes Agent Docker container per user (Cloud Run)
+1. **Multi-tenancy:** ~~One Hermes Agent Docker container per user (Cloud Run)~~
+   **Revised 2026-06-06 (confirmed by Mike):** a **single shared multi-tenant
+   service** for v1 — one Telegram bot + one Cloud Run service for all users,
+   data isolated by `user_id`. Far simpler/cheaper; can shard to per-user later.
 2. **Infrastructure:** Claude Code has full authority over Cloud Run, Docker, and deployment decisions
 3. **Database:** Supabase (project: `lhquhastwnurmvyrzdeh`) with Row Level Security for user data isolation
 4. **UI:** Telegram only (no web app beyond the landing/subscription page)

@@ -1,0 +1,82 @@
+# Cloud Build — build the pinned Hermes base, the bot overlay, and the web image,
+# push to Artifact Registry, and deploy both Cloud Run services.
+#
+#   gcloud builds submit --config docker/cloudbuild.yaml \
+#     --substitutions=_REGION=us-central1
+#
+# Keep _HERMES_COMMIT in sync with agent/hermes.commit.
+substitutions:
+  _REGION: us-central1
+  _REPO: open-trainer
+  _HERMES_COMMIT: ef7e5168b52e4d3b38028fb960b48af88b149154
+
+steps:
+  # 1) Build the pinned upstream Hermes base image directly from GitHub.
+  - id: hermes-base
+    name: gcr.io/cloud-builders/docker
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        docker build -t hermes-base:${_HERMES_COMMIT} \
+          "https://github.com/NousResearch/hermes-agent.git#${_HERMES_COMMIT}"
+
+  # 2) Build the Open-Trainer bot overlay on top of the base.
+  - id: bot
+    name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -f
+      - docker/Dockerfile
+      - --build-arg
+      - HERMES_IMAGE=hermes-base:${_HERMES_COMMIT}
+      - -t
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/bot:latest
+      - .
+
+  # 3) Build the web/subscription service.
+  - id: web
+    name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -f
+      - docker/Dockerfile.server
+      - -t
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/web:latest
+      - .
+
+  # 4) Push images.
+  - id: push-bot
+    name: gcr.io/cloud-builders/docker
+    args: [push, "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/bot:latest"]
+  - id: push-web
+    name: gcr.io/cloud-builders/docker
+    args: [push, "${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/web:latest"]
+
+  # 5) Deploy both Cloud Run services from the manifests.
+  - id: deploy-bot
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        sed -e "s/PROJECT_ID/$PROJECT_ID/g" -e "s/REGION/${_REGION}/g" \
+          docker/cloud-run-bot.yaml > /workspace/bot.yaml
+        gcloud run services replace /workspace/bot.yaml --region ${_REGION}
+  - id: deploy-web
+    name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        sed -e "s/PROJECT_ID/$PROJECT_ID/g" -e "s/REGION/${_REGION}/g" \
+          docker/cloud-run-server.yaml > /workspace/web.yaml
+        gcloud run services replace /workspace/web.yaml --region ${_REGION}
+
+images:
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/bot:latest
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/web:latest
+
+options:
+  machineType: E2_HIGHCPU_8
+timeout: 2400s

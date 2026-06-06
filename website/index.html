@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Open-Trainer — Your AI Personal Trainer on Telegram</title>
+  <meta name="description" content="An AI personal trainer that coaches you through every workout — right inside Telegram. Adaptive plans, set-by-set logging, and real progression." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="nav">
+    <div class="brand">💪 Open-Trainer</div>
+    <nav>
+      <a href="#how">How it works</a>
+      <a href="#personalities">Trainers</a>
+      <a href="#pricing">Pricing</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>Your AI personal trainer,<br />right inside Telegram.</h1>
+      <p class="sub">Text a bot, get a workout. Open-Trainer plans each session
+        around your goals and equipment, walks you through it set by set, logs
+        every rep, and pushes your numbers up over time.</p>
+      <button class="cta" data-checkout>Start training — subscribe</button>
+      <p class="fineprint">Cancel anytime. Works on the Telegram you already have.</p>
+      <p class="banner" id="canceled" hidden>Checkout canceled — no charge made. Ready when you are.</p>
+    </section>
+
+    <section id="how" class="cards">
+      <h2>How it works</h2>
+      <div class="card-row">
+        <div class="card"><span class="num">1</span><h3>Subscribe</h3><p>Check out securely with Stripe and get a verification code.</p></div>
+        <div class="card"><span class="num">2</span><h3>Link Telegram</h3><p>Send the code to the bot — your account links instantly.</p></div>
+        <div class="card"><span class="num">3</span><h3>Onboard</h3><p>Goal, location, equipment, session length, and trainer style.</p></div>
+        <div class="card"><span class="num">4</span><h3>Train</h3><p>Say “let’s work out” and get coached through every set.</p></div>
+      </div>
+    </section>
+
+    <section id="personalities" class="personalities">
+      <h2>Pick your trainer</h2>
+      <div class="card-row">
+        <div class="card"><h3>🗣️ Motivational Coach</h3><p>High energy, celebrates every win, keeps you going.</p></div>
+        <div class="card"><h3>🎯 No-Nonsense Trainer</h3><p>Direct and efficient. The number, the cue, the next move.</p></div>
+        <div class="card"><h3>🔬 Science-Based</h3><p>Evidence-driven. Explains the “why” behind the work.</p></div>
+      </div>
+    </section>
+
+    <section id="pricing" class="pricing">
+      <h2>Simple pricing</h2>
+      <div class="price-card">
+        <div class="price">$12<span>/mo</span></div>
+        <ul>
+          <li>✅ Adaptive workout programming</li>
+          <li>✅ Set-by-set logging &amp; progression</li>
+          <li>✅ Progress history &amp; reminders</li>
+          <li>✅ Three trainer personalities</li>
+        </ul>
+        <button class="cta" data-checkout>Subscribe</button>
+        <p class="fineprint" id="checkout-error" hidden></p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Open-Trainer · Built on <a href="https://github.com/NousResearch/hermes-agent">Hermes Agent</a> · MIT</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
