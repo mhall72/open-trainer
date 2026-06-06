@@ -1,0 +1,5 @@
+# Upstream Hermes Agent base — pinned commit (the "fork base").
+# Repo: https://github.com/NousResearch/hermes-agent
+# Bump deliberately and re-test after reviewing upstream changes.
+HERMES_REPO=https://github.com/NousResearch/hermes-agent.git
+HERMES_COMMIT=ef7e5168b52e4d3b38028fb960b48af88b149154

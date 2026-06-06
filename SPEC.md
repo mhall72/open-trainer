@@ -205,3 +205,22 @@ User: "go"
 - Voice messages for reporting sets?
 - Progress charts sent as images?
 - Workout sharing / social features?
+
+## 6. Implementation Notes (as built, 2026-06-06)
+
+These choices were made during implementation; rationale in `ARCHITECTURE.md`.
+
+- **Weights** are stored canonically in **kilograms** (`sets.weight_kg`). Each
+  profile has a `unit_preference` (default `lbs`) and all I/O happens in the
+  user's unit. Reconciles the kg schema with the lbs example dialogs.
+- **RLS** uses a **default-deny** model (no anon/authenticated policies) with the
+  backend on the service-role key, rather than `user_id = auth.uid()`, because
+  identity is the Telegram id, not Supabase Auth.
+- **Account linking** adds a `verification_codes` table and is **bot-initiated**
+  (user sends a 6-char code to the bot, or taps `t.me/<bot>?start=<code>`), since
+  bots can't DM a user by handle until the user starts the chat.
+- **Extra schema:** `target_sets`/`target_reps` on `exercises`, `focus` on
+  `workouts`, timezone + `last_sent_at` on `reminders`, and an `exercise_library`
+  reference table that powers the engine.
+- **LLM:** DeepSeek `v4-flash` via Hermes' bundled provider (env-configurable).
+- **Hosting:** one shared multi-tenant service (see Key Decisions #1, revised).

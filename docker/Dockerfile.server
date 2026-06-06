@@ -1,0 +1,23 @@
+# =============================================================================
+# Open-Trainer — Web/subscription service (FastAPI). Serves the landing page +
+# Stripe checkout + Telegram account-link API. Stateless; talks to Supabase.
+# =============================================================================
+FROM python:3.11-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    WEBSITE_DIR=/app/website
+
+WORKDIR /app
+
+COPY server/requirements.txt /app/server/requirements.txt
+RUN pip install --no-cache-dir -r /app/server/requirements.txt
+
+COPY server/  /app/server/
+COPY website/ /app/website/
+
+WORKDIR /app/server
+
+# Cloud Run provides $PORT (default 8080).
+ENV PORT=8080
+CMD ["sh", "-c", "uvicorn app:app --host 0.0.0.0 --port ${PORT}"]

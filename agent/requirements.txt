@@ -1,0 +1,4 @@
+# Open-Trainer skill dependencies (in addition to whatever Hermes installs).
+# The engine/onboarding/models modules are pure stdlib; only the data layer
+# needs a dependency.
+httpx>=0.27,<1.0

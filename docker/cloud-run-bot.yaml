@@ -1,0 +1,45 @@
+# Cloud Run service — Open-Trainer bot (Hermes gateway, Telegram).
+# Deploy: gcloud run services replace docker/cloud-run-bot.yaml --region $REGION
+#
+# The bot maintains a Telegram connection, so it must stay warm:
+#   min instances = 1, max = 1 (single shared multi-tenant bot, one Telegram
+#   connection — do NOT scale horizontally or you'll get update conflicts).
+# Replace PROJECT_ID / REGION / IMAGE and create the referenced secrets first
+# (see ../DEPLOYMENT.md). Secrets live in Secret Manager.
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: open-trainer-bot
+  labels:
+    app: open-trainer
+    component: bot
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "1"
+        autoscaling.knative.dev/maxScale: "1"
+        run.googleapis.com/cpu-throttling: "false"   # keep CPU for the polling loop
+    spec:
+      containerConcurrency: 1
+      timeoutSeconds: 3600
+      containers:
+        - image: REGION-docker.pkg.dev/PROJECT_ID/open-trainer/bot:latest
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          env:
+            - name: OPEN_TRAINER_SUBSCRIBE_URL
+              value: "https://open-trainer.app"
+            - name: SUPABASE_URL
+              value: "https://lhquhastwnurmvyrzdeh.supabase.co"
+            - name: DEEPSEEK_API_KEY
+              valueFrom:
+                secretKeyRef: { name: deepseek-api-key, key: latest }
+            - name: TELEGRAM_BOT_TOKEN
+              valueFrom:
+                secretKeyRef: { name: telegram-bot-token, key: latest }
+            - name: SUPABASE_SERVICE_ROLE_KEY
+              valueFrom:
+                secretKeyRef: { name: supabase-service-role-key, key: latest }
